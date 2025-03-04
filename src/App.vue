@@ -1,6 +1,7 @@
 <template>
-  <div class="w-screen h-screen overflow-hidden flex flex-col">
+  <div @contextmenu.prevent class="w-screen h-screen overflow-hidden flex flex-col">
     <!-- 头部搜索栏 -->
+    <Rightmenu :data="rightmenuList">
     <div class="w-full h-[35px] bg-[#3c3c3c] flex">
       <div class="flex flex-1 justify-center items-center">
         <div class="p-1 relative cursor-pointer hover:bg-[#323842]" @mouseover="leftArrowTip = true"
@@ -24,7 +25,7 @@
           class=" outline-none text-center w-[421px] bg-[#4b4b4b] border-[1px] border-[#737373] rounded-md" readonly
           v-bind:placeholder="reponame">
       </div>
-
+      
       <div class="ml-auto relative">
         <!-- 布局切换 -->
         <div class="flex mr-2 justify-center items-center">
@@ -67,6 +68,7 @@
 
 
     </div>
+    </Rightmenu>
     <!-- 中间主模块 -->
     <div class="flex flex-1 p-0">
       <!-- 左侧侧边栏 -->
@@ -109,8 +111,10 @@
           </div>
 
         </div>
-        <div class=" border-t-2 text-[#eee]">
-          <div v-for="(file, index) in data" :key="file.name" v-text="file.name"></div>
+        <div class=" border-t-2">
+          <!-- <div v-for="(file, index) in data" :key="file.name" v-text="file.name"></div> -->
+
+          <Tree :data="data" :expandKeys="expandIds" @node-click="fn" />
         </div>
       </div>
       <!-- 工作区 -->
@@ -156,14 +160,24 @@ import { Icon } from "@iconify/vue";
 import axios from "axios";
 import { useApi, useclickOutside, useSetting } from "./hooks/index";
 import Dropdown from "./components/dropdown.vue";
+import Rightmenu from "./components/rightmenu.vue";
+import Tree from './components/Tree.vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
-
-
+//获取左侧文件树数据
 const { loading, error, data } = useApi(() => axios.get("/api/each"), {
   defaultData: [],
 });
+const expandIds = ref([]);
+const fn = (id) => {
+  const index = expandIds.value.indexOf(id);
+  if (index > -1) {
+    expandIds.value.splice(index, 1);
+  } else {
+    expandIds.value.push(id);
+  }
 
+};
 
 
 const tooltipVisible = ref(false);
@@ -184,6 +198,28 @@ const dropdownList = [
   {
     name: "时间线",
     disable: false
+  },
+];
+const rightmenuList = [
+  {
+    name: "菜单栏",
+    disable: true,
+    visible: false
+  },
+  {
+    name: "指挥中心",
+    disable: true,
+    visible: true
+  },
+  {
+    name: "导航控件",
+    disable: true,
+    visible: true
+  },
+  {
+    name: "布局控件",
+    disable: true,
+    visible: true
   },
 ];
 const arr1 = [
@@ -296,8 +332,7 @@ const { activeMenuIndex } = actionMenu(function (key) {
 // const { visble: dropdownVisble, open: opendropdown, domRef: dropDownContainerRef } = actionDropdown();
 
 function showtip() {
- 
-    tooltipVisible.value = true;
+  tooltipVisible.value = true;
 }
 function hidetip() {
   tooltipVisible.value = false;
@@ -348,13 +383,18 @@ watch([distanceY], () => {
   })
 })
 
-function checkedCallback(arg){
+function checkedCallback(arg) {
   console.log(arg);
   if (arg.name === "1") {
     console.log("触发自定义事件1");
-    
+
   }
-  
+
+}
+
+function handleRightClick() {
+
+
 }
 
 

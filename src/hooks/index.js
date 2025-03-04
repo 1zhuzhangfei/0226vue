@@ -21,6 +21,8 @@ export function useApi(api, option = {}) {
     const data = ref(option.defaultData ?? null);
     const run = () => {
         api().then((res) => {
+            console.log(res);
+            
             data.value = res.data;
         }).catch((err) => {
             error.value = err;

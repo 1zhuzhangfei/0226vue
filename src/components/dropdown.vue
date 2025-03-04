@@ -9,11 +9,8 @@
     <!-- 下拉菜单 -->
     <div v-show="visible" ref="dropDownContainerRef"
         class="absolute z-50 w-[150px] text-left text-sm border-[1px] border-[#454545] rounded-sm bg-[#252526]">
-        <div v-for="(item, index) in attrs.data" @click="triggerEvent(item)" v-bind:key="item" :class="['pl-2  text-[#cccfd4] cursor-pointer', {
-            'text-[#686868]': !item.disable,
-            'hover:bg-[#323842]': item.disable,
-            'cursor-not-allowed': !item.disable,
-        }]">{{ item.name }}</div>
+        <div v-for="(item, index) in attrs.data" @click="triggerEvent(item)" v-bind:key="item" 
+        :class="`pl-2  cursor-pointer ${!item.disable ? 'text-[#686868]' : 'text-[#cccfd4]'} ${item.disable ? 'hover:bg-[#323842]' : 'cursor-not-allowed'}`">{{ item.name }}</div>
     </div>
 </template>
 <script setup>
