@@ -1,14 +1,18 @@
 <template>
-    <div @click.stop="emit('node-click', item.id)" v-for="item in props.data" :key="item">
+    <DeleteModal :visible="showModal"></DeleteModal>
+        <div @click.stop="emit('node-click', item.fullPath)" v-for="item in props.data" :key="item">
         <div :style="{ paddingLeft: `${props.padding ?? 0}px` }" class="flex hover:bg-black cursor-pointer text-[#bcbcbc] text-sm box-border">
             <div v-if="item.children && item.children.length > 0">
-                <Icon v-if="!props.expandKeys.includes(item.id)" icon="tabler:chevron-right" width="20" height="20"  style="color: #858585" />
+                <Icon v-if="!props.expandKeys.includes(item.fullPath)" icon="tabler:chevron-right" width="20" height="20"  style="color: #858585" />
                 <Icon v-else icon="tabler:chevron-down" width="20" height="20"  style="color: #858585" />
             </div>
-            {{ item.name }}
+            <Rightmenu @checked="controlsCallback" :data="controlsList">
+                {{ item.name }}
+            </Rightmenu>
+            
         </div>
         <div>
-            <Tree v-if="item.children && item.children.length > 0 && props.expandKeys.includes(item.id)" :data="item.children" 
+            <Tree v-if="item.children && item.children.length > 0 && props.expandKeys.includes(item.fullPath)" :data="item.children" 
                 :padding="props.padding + 10"
                 :expand-keys="props.expandKeys"
                 @node-click="(id) => emit('node-click', id)"
@@ -16,6 +20,7 @@
             </Tree>
         </div>
     </div>
+    
 </template>
 <script setup>
 //如何获取组件属性传递的数据
@@ -28,6 +33,9 @@
 
 import { ref,useAttrs, defineProps, defineOptions,defineEmits } from 'vue';
 import { Icon } from "@iconify/vue";
+import Rightmenu from './rightmenu.vue';
+import { controlsList } from '../menuConfig';
+import DeleteModal from './menumodal/DeleteModal.vue';
 //通过defineOptions来规定组件的名称
 defineOptions({ name: "Tree" });
 const props = defineProps({
@@ -46,8 +54,13 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["node-click"])
-
-
+const showModal = ref(false);
+function controlsCallback(arg){
+    if (arg.id === 1) {
+        showModal.value = true
+        console.log("触发删除事件");
+    }
+}
 // baz:{
     //     required:true,
     //     validator(value){

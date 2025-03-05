@@ -13,6 +13,24 @@ export function useclickOutside(domRef, callback) {
             }
         })
     })
+    onMounted(function () {
+        document.addEventListener("contextmenu", (e) => {
+            if (!domRef.value?.contains(e.target)) {
+                callback();
+            }
+        })
+    })
+}
+export function useclickrightOutside(domRef, callback) {
+    onMounted(function () {
+        //执行的时机是在template挂载到页面之后
+        //引用数据类型 value属性是null 异步获取节点然后赋值给value
+        document.addEventListener("contextmenu", (e) => {
+            if (!domRef.value?.contains(e.target)) {
+                callback();
+            }
+        })
+    })
 }
 
 export function useApi(api, option = {}) {

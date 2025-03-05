@@ -1,8 +1,9 @@
 <template>
-  <div @contextmenu.prevent class="w-screen h-screen overflow-hidden flex flex-col">
+  <!-- <ContextMenu /> -->
+  <div class="w-screen h-screen overflow-hidden flex flex-col">
     <!-- 头部搜索栏 -->
-    <Rightmenu :data="rightmenuList">
-    <div class="w-full h-[35px] bg-[#3c3c3c] flex">
+    <Rightmenu @checked="checkedCallback" :data="rightmenuList">
+      <div class="w-full h-[35px] bg-[#3c3c3c] flex">
       <div class="flex flex-1 justify-center items-center">
         <div class="p-1 relative cursor-pointer hover:bg-[#323842]" @mouseover="leftArrowTip = true"
           @mouseout="leftArrowTip = false">
@@ -69,7 +70,9 @@
 
     </div>
     </Rightmenu>
+    
     <!-- 中间主模块 -->
+     
     <div class="flex flex-1 p-0">
       <!-- 左侧侧边栏 -->
       <div class="bg-[#333] flex flex-col p-0 justify-between items-center">
@@ -163,6 +166,10 @@ import Dropdown from "./components/dropdown.vue";
 import Rightmenu from "./components/rightmenu.vue";
 import Tree from './components/Tree.vue';
 import { VueDraggable } from 'vue-draggable-plus';
+import { useContextMenu } from "./components/contextmenu";
+import { arr1,menuIcons,dropdownList,rightmenuList } from "./menuConfig";
+//获取右键菜单栏文档碎片
+const { ContextMenu, api } = useContextMenu();
 
 //获取左侧文件树数据
 const { loading, error, data } = useApi(() => axios.get("/api/each"), {
@@ -182,100 +189,6 @@ const fn = (id) => {
 
 const tooltipVisible = ref(false);
 const reponame = ref("按名称搜索文件");
-const dropdownList = [
-  {
-    name: "打开的编辑器",
-    disable: true
-  },
-  {
-    name: "文件夹",
-    disable: false
-  },
-  {
-    name: "大纲",
-    disable: true
-  },
-  {
-    name: "时间线",
-    disable: false
-  },
-];
-const rightmenuList = [
-  {
-    name: "菜单栏",
-    disable: true,
-    visible: false
-  },
-  {
-    name: "指挥中心",
-    disable: true,
-    visible: true
-  },
-  {
-    name: "导航控件",
-    disable: true,
-    visible: true
-  },
-  {
-    name: "布局控件",
-    disable: true,
-    visible: true
-  },
-];
-const arr1 = [
-  {
-    name: "1",
-    disable: true
-  },
-  {
-    name: "2",
-    disable: false
-  },
-  {
-    name: "3",
-    disable: true
-  },
-  {
-    name: "4",
-    disable: false
-  },
-];
-
-
-
-const menuIcons = [
-  {
-    name: "iconoir:github-circle",
-    id: 1
-  },
-  {
-    name: "uil:bars",
-    id: 2
-  },
-  {
-    name: "uil:copy",
-    id: 3
-  },
-  {
-    name: "codicon:search",
-    id: 4
-  },
-  {
-    name: "ri:git-branch-line",
-    id: 5
-  },
-  {
-    name: "codicon:debug-alt",
-    id: 6
-  },
-  {
-    name: "codicon:extensions",
-    id: 7
-  },
-  {
-    name: "mage:robot-sad",
-    id: 8
-  }];
 
 function actionMenu(callback) {
 
