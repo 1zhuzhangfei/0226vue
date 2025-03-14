@@ -1,5 +1,5 @@
 <template>
-    <DeleteModal :visible="showModal"></DeleteModal>
+    <Modal></Modal>
         <div @click.stop="emit('node-click', item.fullPath)" v-for="item in props.data" :key="item">
         <div :style="{ paddingLeft: `${props.padding ?? 0}px` }" class="flex hover:bg-black cursor-pointer text-[#bcbcbc] text-sm box-border">
             <div v-if="item.children && item.children.length > 0">
@@ -35,7 +35,9 @@ import { ref,useAttrs, defineProps, defineOptions,defineEmits } from 'vue';
 import { Icon } from "@iconify/vue";
 import Rightmenu from './rightmenu.vue';
 import { controlsList } from '../menuConfig';
-import DeleteModal from './menumodal/DeleteModal.vue';
+// import DeleteModal from './menumodal/DeleteModal.vue';
+import { useModal } from './menumodal/index'; 
+
 //通过defineOptions来规定组件的名称
 defineOptions({ name: "Tree" });
 const props = defineProps({
@@ -59,8 +61,24 @@ function controlsCallback(arg){
     if (arg.id === 1) {
         showModal.value = true
         console.log("触发删除事件");
+        openModal(arg)
     }
 }
+const [Modal, modalApi] = useModal({
+  content: "是否确认删除当前文件？",
+  cancel() {
+    console.log("你点击了取消！");
+  },
+  confirm() {
+    console.log("你点击了确定！");
+  },
+});
+function openModal(e) {
+  // console.log(trans.x);
+  
+  modalApi.open(e);
+}
+
 // baz:{
     //     required:true,
     //     validator(value){
